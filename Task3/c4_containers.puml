@@ -1,0 +1,54 @@
+@startuml c4_containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title C4 L2: Контейнеры — открытие депозитов онлайн (MVP)
+
+LAYOUT_WITH_LEGEND()
+
+Person(client_ib, "Клиент ИБ", "Авторизованный клиент")
+Person(backoffice, "Менеджер бэк-офиса")
+Person(rate_mgr, "Менеджер бэк-офиса (ставки)")
+
+System_Ext(website, "Сайт банка", "PHP / React.js")
+System_Ext(callcenter, "Система кол-центра", "Java Spring Boot / PostgreSQL")
+System_Ext(sms_gw, "СМС-шлюз", "Внешний шлюз телеком-оператора")
+
+System_Boundary(ib_boundary, "Интернет-банк") {
+    Container(ib_web, "IB Web App", "ASP.NET MVC 4.5 / .NET Framework", "Существующий монолит. Аутентификация, UI подачи заявки, отображение ставок из кеша, просмотр статуса заявки.")
+    Container(deposit_svc, "Deposit Service", "Новый микросервис / .NET или Java", "Приём и хранение заявок. Выдача и проверка OTP. Публикация заявок в Kafka. Отправка SMS через шлюз.")
+    Container(rate_cache, "Rate Cache Service", "Новый микросервис / .NET или Java", "Периодически синхронизирует справочник ставок из АБС (read-only). Отвечает на запросы IB Web App.")
+    ContainerDb(deposit_db, "Deposit DB", "MS SQL", "Хранение заявок на депозит и их статусов.")
+    ContainerQueue(kafka, "Apache Kafka", "Message Broker", "Топик deposit-applications: заявки из ИБ в АБС. Топик deposit-status: статусные события из АБС в ИБ.")
+}
+
+System_Boundary(abs_boundary, "АБС") {
+    Container(abs_consumer, "ABS Deposit Consumer", "Новый компонент / Java", "Подписан на топик deposit-applications. Создаёт заявку в БД АБС.")
+    Container(abs_producer, "ABS Status Producer", "Новый компонент / Java", "При изменении статуса заявки публикует событие в топик deposit-status.")
+    Container(abs_desktop, "АБС Десктоп-клиент", "Delphi", "Рабочий интерфейс бэк-офиса. Просмотр заявок, подтверждение ставки, открытие депозита.")
+    ContainerDb(abs_db, "АБС БД", "Oracle / PL-SQL", "Центральная БД банка. Счета, заявки, справочник ставок, бизнес-логика в PL-SQL.")
+}
+
+Rel(client_ib, ib_web, "Подача заявки, ввод OTP, статус", "HTTPS")
+
+Rel(ib_web, deposit_svc, "Подать заявку / подтвердить OTP", "REST API")
+Rel(ib_web, rate_cache, "Получить актуальные ставки", "REST API")
+
+Rel(deposit_svc, deposit_db, "CRUD заявок и статусов", "SQL")
+Rel(deposit_svc, sms_gw, "Отправить OTP / уведомление", "HTTPS API")
+Rel(deposit_svc, kafka, "Публикует заявку [deposit-applications]", "Kafka Producer")
+Rel(kafka, deposit_svc, "Получает статусное событие [deposit-status]", "Kafka Consumer")
+
+Rel(rate_cache, abs_db, "Периодический read-only запрос справочника ставок", "JDBC / SQL")
+
+Rel(kafka, abs_consumer, "Читает заявку [deposit-applications]", "Kafka Consumer")
+Rel(abs_consumer, abs_db, "Создаёт запись заявки в АБС", "JDBC / PL-SQL")
+Rel(abs_db, abs_producer, "Триггер / планировщик при изменении статуса заявки")
+Rel(abs_producer, kafka, "Публикует статусное событие [deposit-status]", "Kafka Producer")
+
+Rel(backoffice, abs_desktop, "Обрабатывает заявки, открывает депозиты")
+Rel(abs_desktop, abs_db, "Читает заявки, сохраняет решения", "ODBC / PL-SQL")
+Rel(rate_mgr, abs_desktop, "Редактирует справочник ставок")
+
+Rel(website, callcenter, "Передаёт заявку нового клиента (ФИО, телефон)", "HTTPS API")
+
+@enduml

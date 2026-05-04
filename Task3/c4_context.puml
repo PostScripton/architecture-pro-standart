@@ -1,0 +1,34 @@
+@startuml c4_context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title C4 L1: Контекст — открытие депозитов онлайн (MVP)
+
+LAYOUT_WITH_LEGEND()
+
+Person(client_site, "Новый клиент", "Посетитель сайта, хочет открыть депозит.")
+Person(client_ib, "Клиент интернет-банка", "Идентифицированный клиент, открывает депозит онлайн.")
+Person(backoffice, "Менеджер бэк-офиса депозитов", "Обрабатывает заявки на депозит в АБС.")
+Person(callcenter_mgr, "Менеджер кол-центра", "Обрабатывает заявки с сайта, звонит клиентам.")
+Person(rate_mgr, "Менеджер бэк-офиса (депозиты / кредиты)", "Ведёт справочник ставок по депозитам.")
+
+System(website, "Сайт банка", "PHP / React.js. Маркетинговый сайт. Форма заявки на депозит.")
+System(ib, "Интернет-банк", "ASP.NET MVC 4.5 (монолит) + новые микросервисы. Онлайн-банкинг для клиентов.")
+System_Ext(callcenter, "Система кол-центра", "React.js / Java Spring Boot / PostgreSQL. CRM-платформа подрядчика.")
+System_Ext(abs, "АБС", "Delphi / Oracle / PL-SQL. Центральная банковская система. Учёт счетов, продуктов, заявок.")
+System_Ext(sms, "СМС-шлюз телеком-оператора", "Внешний шлюз. Отправляет SMS клиентам.")
+
+Rel(client_site, website, "Заполняет форму заявки (ФИО, телефон)", "HTTPS")
+Rel(website, callcenter, "Передаёт заявку нового клиента", "HTTPS API")
+Rel(callcenter_mgr, callcenter, "Просматривает заявки, звонит клиенту")
+Rel(callcenter, client_site, "Звонок менеджера", "Телефон")
+
+Rel(client_ib, ib, "Просматривает ставки, подаёт заявку, вводит СМС-код", "HTTPS")
+Rel(ib, abs, "Передаёт заявку на депозит", "Kafka")
+Rel(abs, ib, "Уведомляет об изменении статуса заявки", "Kafka")
+Rel(ib, sms, "Отправляет OTP и уведомления", "HTTPS API")
+Rel(sms, client_ib, "Доставляет SMS")
+
+Rel(backoffice, abs, "Обрабатывает заявку, открывает депозит")
+Rel(rate_mgr, abs, "Создаёт и редактирует ставки по депозитам")
+
+@enduml
