@@ -1,0 +1,76 @@
+@startuml c4_containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title C4 L2: Контейнеры — онлайн-заявка на кредит (1 год)
+
+LAYOUT_WITH_LEGEND()
+
+Person(client_ib, "Клиент ИБ", "Авторизованный клиент")
+Person(credit_mgr, "Кредитный менеджер", "Бэк-офис кредитов")
+
+System_Ext(website, "Сайт банка", "PHP / React.js")
+System_Ext(callcenter, "Система кол-центра", "Java Spring Boot / PostgreSQL")
+System_Ext(sms_gw, "СМС-шлюз", "Внешний шлюз телеком-оператора")
+System_Ext(abs, "АБС", "Delphi / Oracle / PL-SQL")
+System_Ext(bki, "БКИ", "Внешняя система. REST API.")
+
+System_Boundary(ib_boundary, "Интернет-банк") {
+    Container(ib_web, "IB Web App", "ASP.NET MVC 4.5 / .NET Framework", "Существующий монолит. Аутентификация, UI подачи заявки на кредит, отображение предодобренных предложений, статус заявки.")
+    Container(deposit_svc, "Deposit Service", "Микросервис / .NET или Java", "Существующий сервис (Task 3). Заявки на депозит, OTP, Kafka.")
+    Container(rate_cache, "Rate Cache Service", "Микросервис / .NET или Java", "Существующий сервис (Task 3). Кеш справочника ставок из АБС.")
+    Container(credit_svc, "Credit Service", "Новый микросервис / .NET или Java", "Приём кредитных заявок. Выдача и проверка OTP. Публикация заявок в Kafka. Отправка SMS. Получение статусных событий из конвейера.")
+    Container(preapproval_svc, "Pre-Approval Service", "Новый микросервис / .NET или Java", "Ночной батч: запрашивает скоринг активных клиентов ИБ, рассчитывает параметры предложений, сохраняет результаты. Проверяет согласие клиента на БКИ-запрос.")
+    ContainerDb(credit_db, "Credit DB", "MS SQL", "Кредитные заявки и их статусы.")
+    ContainerDb(preapproval_db, "Pre-Approval DB", "MS SQL", "Предодобренные предложения. Согласия клиентов на обработку данных БКИ.")
+    ContainerDb(deposit_db, "Deposit DB", "MS SQL", "Существующая БД (Task 3). Заявки на депозит.")
+    ContainerQueue(kafka, "Apache Kafka", "Message Broker", "Топики deposit-applications, deposit-status (Task 3). Топики credit-applications, credit-status (новые).")
+}
+
+System_Boundary(pipeline_boundary, "Кредитный конвейер") {
+    Container(camunda, "Camunda BPM", "Java / Camunda", "Оркестрирует кредитный процесс. Fast path для предодобренных заявок (без повторного скоринга, только AML). Стандартный маршрут с запросом скоринга. Очередь ручной обработки.")
+    Container(abs_credit_consumer, "ABS Credit Consumer", "Новый компонент / Java", "Подписан на топик credit-applications. Запускает экземпляр процесса в Camunda.")
+    Container(abs_credit_producer, "ABS Credit Producer", "Новый компонент / Java", "Публикует статусные события в топик credit-status при изменении состояния заявки.")
+    ContainerDb(pipeline_db, "Oracle DB", "Oracle", "Данные заявок и состояния процессов Camunda.")
+}
+
+System_Boundary(scoring_boundary, "Система кредитного скоринга") {
+    Container(scoring_api, "Scoring API", "Python / Flask", "REST API. Рассчитывает кредитный рейтинг клиента. Запрашивает АБС и БКИ.")
+    ContainerDb(scoring_db, "Scoring DB", "PostgreSQL", "Данные ML-модели, история скоринговых запросов.")
+}
+
+Rel(client_ib, ib_web, "Просмотр предложения, подача заявки, ввод OTP, статус", "HTTPS")
+
+Rel(ib_web, credit_svc, "Подать заявку / подтвердить OTP / получить статус", "REST API")
+Rel(ib_web, preapproval_svc, "Получить предодобренное предложение клиента", "REST API")
+Rel(ib_web, rate_cache, "Получить актуальные ставки по депозитам", "REST API")
+Rel(ib_web, deposit_svc, "Подать заявку на депозит / подтвердить OTP", "REST API")
+
+Rel(credit_svc, credit_db, "CRUD заявок и статусов", "SQL")
+Rel(credit_svc, sms_gw, "Отправить OTP / уведомление о статусе", "HTTPS API")
+Rel(credit_svc, kafka, "Публикует заявку [credit-applications]", "Kafka Producer")
+Rel(kafka, credit_svc, "Получает статусное событие [credit-status]", "Kafka Consumer")
+
+Rel(preapproval_svc, preapproval_db, "Читает согласия, сохраняет предложения", "SQL")
+Rel(preapproval_svc, scoring_api, "Запрашивает скоринг клиентов (ночной батч)", "HTTPS REST")
+
+Rel(scoring_api, abs, "Получает финансовые данные клиента", "HTTPS API")
+Rel(scoring_api, bki, "Запрашивает кредитную историю", "HTTPS REST API")
+Rel(scoring_api, scoring_db, "Хранит результаты, данные модели", "SQL")
+
+Rel(kafka, abs_credit_consumer, "Читает заявку [credit-applications]", "Kafka Consumer")
+Rel(abs_credit_consumer, camunda, "Запускает экземпляр процесса обработки заявки", "Java API")
+Rel(camunda, pipeline_db, "Хранит данные заявок и состояния процессов", "SQL / JDBC")
+Rel(camunda, scoring_api, "Запрашивает скоринг (стандартный маршрут)", "HTTPS REST")
+Rel(camunda, abs, "Передаёт решение, создаёт кредитный договор", "HTTPS API")
+Rel(camunda, abs_credit_producer, "Инициирует публикацию статусного события")
+Rel(abs_credit_producer, kafka, "Публикует статусное событие [credit-status]", "Kafka Producer")
+
+Rel(credit_mgr, camunda, "Обрабатывает заявки из очереди ручной проверки", "HTTPS / Web UI")
+
+Rel(website, callcenter, "Передаёт заявку посетителя (ФИО, телефон, сумма)", "HTTPS API")
+
+Rel(deposit_svc, deposit_db, "CRUD заявок на депозит", "SQL")
+Rel(deposit_svc, kafka, "Публикует / читает события депозитов", "Kafka")
+Rel(rate_cache, abs, "Периодический read-only запрос справочника ставок", "JDBC / SQL")
+
+@enduml

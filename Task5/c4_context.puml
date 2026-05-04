@@ -1,0 +1,42 @@
+@startuml c4_context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title C4 L1: Контекст — онлайн-заявка на кредит (1 год)
+
+LAYOUT_WITH_LEGEND()
+
+Person(client_ib, "Клиент интернет-банка", "Идентифицированный клиент. Просматривает предодобренное предложение, подаёт заявку на кредит онлайн.")
+Person(visitor, "Посетитель сайта", "Неидентифицированный пользователь. Подаёт заявку на кредит через сайт.")
+Person(credit_mgr, "Кредитный менеджер", "Сотрудник бэк-офиса кредитов. Обрабатывает заявки, требующие ручной проверки.")
+Person(callcenter_mgr, "Менеджер кол-центра", "Обрабатывает заявки с сайта, связывается с клиентом, инициирует кредитный процесс.")
+
+System(ib, "Интернет-банк", "ASP.NET MVC 4.5 (монолит) + микросервисы. Онлайн-банкинг. Приём кредитных заявок, отображение предодобренных предложений.")
+System(credit_pipeline, "Кредитный конвейер", "Camunda BPM / Oracle / Java. Обрабатывает кредитные заявки. Fast path для предодобренных клиентов.")
+System_Ext(abs, "АБС", "Delphi / Oracle / PL-SQL. Центральная банковская система. Учёт счетов, продуктов, кредитных договоров.")
+System_Ext(scoring, "Система кредитного скоринга", "Python / Flask / PostgreSQL. Рассчитывает кредитный рейтинг клиента на основе данных АБС и БКИ.")
+System_Ext(bki, "Бюро кредитных историй (БКИ)", "Внешняя система. REST API. Предоставляет кредитную историю клиента.")
+System_Ext(sms, "СМС-шлюз телеком-оператора", "Внешний шлюз. Отправляет SMS клиентам.")
+System_Ext(website, "Сайт банка", "PHP / React.js. Маркетинговый сайт. Форма заявки на кредит для посетителей.")
+System_Ext(callcenter, "Система кол-центра", "React.js / Java Spring Boot / PostgreSQL. CRM-платформа подрядчика.")
+
+Rel(client_ib, ib, "Просматривает предложение, подаёт заявку, вводит СМС-код", "HTTPS")
+Rel(ib, credit_pipeline, "Передаёт кредитную заявку", "Kafka")
+Rel(credit_pipeline, ib, "Уведомляет об изменении статуса заявки", "Kafka")
+Rel(ib, sms, "Отправляет OTP и уведомления о статусе", "HTTPS API")
+Rel(sms, client_ib, "Доставляет SMS")
+
+Rel(ib, scoring, "Запрашивает скоринг клиентов (ночной батч)", "REST API")
+Rel(scoring, abs, "Получает финансовые данные клиента", "HTTPS API")
+Rel(scoring, bki, "Запрашивает кредитную историю", "HTTPS REST API")
+
+Rel(credit_pipeline, scoring, "Запрашивает скоринг при стандартной заявке", "REST API")
+Rel(credit_pipeline, abs, "Передаёт решение, создаёт кредитный договор", "Kafka / API")
+
+Rel(credit_mgr, credit_pipeline, "Обрабатывает заявки из очереди ручной проверки")
+
+Rel(visitor, website, "Заполняет форму заявки на кредит (ФИО, телефон, сумма)", "HTTPS")
+Rel(website, callcenter, "Передаёт заявку посетителя", "HTTPS API")
+Rel(callcenter_mgr, callcenter, "Просматривает заявки, звонит клиенту")
+Rel(callcenter, visitor, "Звонок менеджера", "Телефон")
+
+@enduml
