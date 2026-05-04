@@ -1,0 +1,26 @@
+@startuml c4_context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title C4 Context: Передача ставок в кол-центры (Task 4)
+
+Person(call_center_op, "Оператор кол-центра банка", "Консультирует клиентов по депозитным ставкам по телефону")
+Person(partner_op, "Оператор партнёрского кол-центра", "Консультирует клиентов по депозитным ставкам по телефону")
+
+System(abs, "АБС", "Автоматизированная банковская система. Источник справочника депозитных ставок")
+System(rate_cache, "Rate Cache Service", "Кеширует ставки из АБС, предоставляет REST API и выгружает файлы на SFTP по расписанию")
+System(sftp, "SFTP-сервер", "Файловый сервер банка. Промежуточное хранилище файлов ставок для партнёра")
+System(call_center_sys, "Система кол-центра", "CRM-платформа подрядчика. Интерфейс для операторов кол-центра банка")
+
+System_Ext(partner_cc, "Система партнёрского кол-центра", "Внешняя система. Получает файлы со ставками с SFTP и отображает их операторам")
+
+Rel(call_center_op, call_center_sys, "Просматривает актуальные ставки")
+Rel(partner_op, partner_cc, "Просматривает актуальные ставки")
+
+Rel(call_center_sys, rate_cache, "Запрашивает актуальные ставки", "REST API, HTTPS")
+Rel(rate_cache, abs, "Синхронизирует ставки по расписанию", "SQL read-only")
+Rel(rate_cache, sftp, "Выгружает CSV-файл ставок по расписанию", "SFTP")
+Rel(partner_cc, sftp, "Забирает CSV-файл ставок по расписанию", "SFTP")
+
+@enduml
