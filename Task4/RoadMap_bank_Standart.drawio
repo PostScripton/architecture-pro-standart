@@ -1,0 +1,179 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="24.8.4" pages="2">
+  <diagram id="mvp-6months" name="MVP (6 месяцев)">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Q1 quarter header -->
+        <mxCell id="q1-header" value="Q1 (месяц 1–3)" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=10;fillColor=#f5f5f5;strokeColor=#666666;fontSize=18;fontStyle=1;align=center;rounded=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-1240" width="800" height="74.4" as="geometry" />
+        </mxCell>
+
+        <!-- Q2 quarter header -->
+        <mxCell id="q2-header" value="Q2 (месяц 4–6)" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=10;fillColor=#f5f5f5;strokeColor=#666666;fontSize=18;fontStyle=1;align=center;rounded=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-1700" y="-1240" width="800" height="74.4" as="geometry" />
+        </mxCell>
+
+        <!-- Row 1 background: Rate Cache Service -->
+        <mxCell id="row1-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-1146.8" width="1600" height="196.8" as="geometry" />
+        </mxCell>
+
+        <!-- Row 2 background: SFTP-сервер -->
+        <mxCell id="row2-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-930" width="1600" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Row 3 background: Система кол-центра -->
+        <mxCell id="row3-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-730" width="1600" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Row 4 background: Система партнёрского кол-центра -->
+        <mxCell id="row4-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-530" width="1600" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- System labels (left column) -->
+        <mxCell id="sys1-label" value="Rate Cache Service" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-1146.8" width="140" height="196.8" as="geometry" />
+        </mxCell>
+        <mxCell id="sys2-label" value="SFTP-сервер" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-930" width="140" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="sys3-label" value="Система кол-центра банка" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-730" width="140" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="sys4-label" value="Система партнёрского кол-центра" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-530" width="140" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- Q1 Tasks -->
+        <!-- T1: Rate Cache Service - new /rates endpoint -->
+        <mxCell id="t1" value="T1 — Добавить endpoint /rates в Rate Cache Service API" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2480" y="-1120" width="680" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- T3: SFTP server setup -->
+        <mxCell id="t3" value="T3 — Развернуть SFTP-сервер и настроить учётные записи" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2480" y="-910" width="680" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- T2: Call center widget (starts Q1, spans into Q2) -->
+        <mxCell id="t2" value="T2 — Разработать виджет ставок в интерфейсе оператора кол-центра" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2480" y="-710" width="780" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Q2 Tasks -->
+        <!-- T4: SFTP export job -->
+        <mxCell id="t4" value="T4 — Реализовать выгрузку CSV-файла ставок на SFTP по расписанию" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-1680" y="-1120" width="680" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- T5: Partner connects to SFTP -->
+        <mxCell id="t5" value="T5 — Настроить получение файлов с SFTP и импорт ставок в систему партнёра" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-1680" y="-510" width="680" height="60" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="target-1year" name="Целевое состояние (год)">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Q1 header -->
+        <mxCell id="tq1-header" value="Q1 (месяц 1–3)" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=10;fillColor=#f5f5f5;strokeColor=#666666;fontSize=18;fontStyle=1;align=center;rounded=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-1240" width="800" height="74.4" as="geometry" />
+        </mxCell>
+
+        <!-- Q2 header -->
+        <mxCell id="tq2-header" value="Q2 (месяц 4–6)" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=10;fillColor=#f5f5f5;strokeColor=#666666;fontSize=18;fontStyle=1;align=center;rounded=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-1700" y="-1240" width="800" height="74.4" as="geometry" />
+        </mxCell>
+
+        <!-- Q3 header -->
+        <mxCell id="tq3-header" value="Q3 (месяц 7–9)" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=10;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;fontStyle=1;align=center;rounded=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-900" y="-1240" width="800" height="74.4" as="geometry" />
+        </mxCell>
+
+        <!-- Q4 header -->
+        <mxCell id="tq4-header" value="Q4 (месяц 10–12)" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=10;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;fontStyle=1;align=center;rounded=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="-1240" width="800" height="74.4" as="geometry" />
+        </mxCell>
+
+        <!-- Row backgrounds (full year width = 3200) -->
+        <mxCell id="trow1-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-1146.8" width="3200" height="196.8" as="geometry" />
+        </mxCell>
+        <mxCell id="trow2-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-930" width="3200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="trow3-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-730" width="3200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="trow4-bg" value="" style="shape=rect;fillColor=#fff2cc;strokeColor=none;fontSize=24;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2500" y="-530" width="3200" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- System labels -->
+        <mxCell id="tsys1-label" value="Rate Cache Service" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-1146.8" width="140" height="196.8" as="geometry" />
+        </mxCell>
+        <mxCell id="tsys2-label" value="SFTP-сервер" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-930" width="140" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="tsys3-label" value="Система кол-центра банка" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-730" width="140" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="tsys4-label" value="Система партнёрского кол-центра" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-2650" y="-530" width="140" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- Q1 Tasks (MVP) -->
+        <mxCell id="tt1" value="T1 — Добавить endpoint /rates в Rate Cache Service API" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2480" y="-1120" width="680" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tt3" value="T3 — Развернуть SFTP-сервер и настроить учётные записи" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2480" y="-910" width="680" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tt2" value="T2 — Разработать виджет ставок в интерфейсе оператора кол-центра" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2480" y="-710" width="780" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Q2 Tasks (MVP) -->
+        <mxCell id="tt4" value="T4 — Реализовать выгрузку CSV-файла ставок на SFTP по расписанию" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-1680" y="-1120" width="680" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tt5" value="T5 — Настроить получение файлов с SFTP и импорт ставок в систему партнёра" style="shape=rect;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-1680" y="-510" width="680" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Q3 Tasks (Target) -->
+        <!-- T6: Monitoring & alerting for SFTP delivery -->
+        <mxCell id="tt6" value="T6 — Мониторинг доставки файлов: алерты при просрочке выгрузки или скачивания" style="shape=rect;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-880" y="-910" width="680" height="60" as="geometry" />
+        </mxCell>
+        <!-- T7: Rate change notification process for partner -->
+        <mxCell id="tt7" value="T7 — Настроить процесс оперативного уведомления партнёра при изменении ставок (email / мессенджер)" style="shape=rect;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-880" y="-510" width="780" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Q4 Tasks (Target) -->
+        <!-- T8: SFTP HA / redundancy -->
+        <mxCell id="tt8" value="T8 — Обеспечить отказоустойчивость SFTP-сервера (резервный узел)" style="shape=rect;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-80" y="-910" width="680" height="60" as="geometry" />
+        </mxCell>
+        <!-- T9: Auto-update rates in call center (cache TTL reduction) -->
+        <mxCell id="tt9" value="T9 — Сократить TTL кеша ставок для более частого обновления данных у операторов" style="shape=rect;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacing=5;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-80" y="-1120" width="680" height="60" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

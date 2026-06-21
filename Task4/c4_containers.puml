@@ -1,0 +1,44 @@
+@startuml c4_containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title C4 Containers: Передача ставок в кол-центры (Task 4)
+
+Person(call_center_op, "Оператор кол-центра банка")
+Person(partner_op, "Оператор партнёрского кол-центра")
+
+System_Boundary(abs_boundary, "АБС") {
+    ContainerDb(abs_db, "Oracle DB", "Oracle / PL-SQL", "Справочник депозитных ставок, учёт операций по счетам")
+}
+
+System_Boundary(rate_cache_boundary, "Rate Cache Service") {
+    Container(rate_cache_api, "Rates API", "REST, Java", "Новый endpoint GET /rates --- возвращает список актуальных ставок")
+    Container(rate_sync, "Rate Sync Job", "Scheduler, Java", "Периодически читает ставки из АБС и обновляет кеш")
+    Container(sftp_export, "SFTP Export Job", "Scheduler, Java", "Формирует CSV-файл со ставками и загружает на SFTP-сервер по расписанию")
+    ContainerDb(rate_cache_db, "Rate Cache", "Redis / In-memory", "Кеш актуальных ставок")
+}
+
+System_Boundary(cc_boundary, "Система кол-центра") {
+    Container(cc_frontend, "Web UI", "React.js", "Интерфейс оператора. Новый виджет отображения депозитных ставок")
+    Container(cc_backend, "Backend", "Java Spring Boot", "Обращается к Rate Cache Service API и передаёт ставки на фронт")
+}
+
+System_Boundary(sftp_boundary, "SFTP-сервер") {
+    Container(sftp_server, "SFTP", "OpenSSH", "Хранит актуальный файл ставок для партнёра. Доступ по SSH-ключу")
+}
+
+System_Ext(partner_cc, "Система партнёрского кол-центра", "Внешняя система. По расписанию забирает файл с SFTP и загружает ставки в интерфейс операторов")
+
+Rel(call_center_op, cc_frontend, "Просматривает ставки", "HTTPS")
+Rel(cc_frontend, cc_backend, "Запрашивает ставки", "REST")
+Rel(cc_backend, rate_cache_api, "GET /rates", "REST, HTTPS")
+Rel(rate_cache_api, rate_cache_db, "Читает кеш")
+Rel(rate_sync, abs_db, "Читает справочник ставок", "SQL read-only, schedule")
+Rel(rate_sync, rate_cache_db, "Обновляет кеш")
+Rel(sftp_export, rate_cache_db, "Читает актуальные ставки")
+Rel(sftp_export, sftp_server, "Загружает CSV-файл", "SFTP, schedule")
+Rel(partner_cc, sftp_server, "Скачивает CSV-файл", "SFTP, schedule")
+Rel(partner_op, partner_cc, "Просматривает ставки")
+
+@enduml
